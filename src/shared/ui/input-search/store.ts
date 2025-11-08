@@ -1,61 +1,66 @@
 import { defineStore } from 'pinia'
-import type { MovieType } from '~/shared/ui/input-search/types.ts'
+import type { MovieSearchResponse, Movie } from '~/shared/ui/input-search/MovieTypes'
 
-export const useMovieSearch = defineStore('movieSearch', () => {
-    const movies = ref<MovieType[]>([])
-    const loading = ref<boolean>(false)
-    const error = ref<string | null>(null)
+export const useMovieStore = defineStore('movie', () => {
+  const movies = ref<Movie[]>([])
+  const total = ref<number>(0)
+  const pages = ref<number>(1)
+  const currentPage = ref<number>(1)
+  const limit = ref<number>(10)
+  const loading = ref<boolean>(false)
+  const error = ref<string | null>(null)
 
-    async function fetchMovies(query: string, page = 1, limit = 10) {
-        if (!query || query.length < 3) {
-            movies.value = []
-            return
-        }
+  const searchMovies = async (query: string, page: number = 1) => {
+    loading.value = true
+    error.value = null
 
-        loading.value = true
-        error.value = null
+    try {
+      const data = await $fetch<MovieSearchResponse>('/api/movies/search', {
+        method: 'GET',
+        query: {
+          query: query.trim(),
+          page,
+          limit: limit.value
+        },
+      })
 
-        try {
-            console.log(query)
-            // const { data, error: fetchError } = await useFetch<{ docs: MovieType[] }>(
-            //   `https://api.kinopoisk.dev/v1.4/movie/search`,
-            //   {
-            //     params: {
-            //       page,
-            //       limit,
-            //       query
-            //     },
-            //     headers: {
-            //       'X-API-KEY': 'SES048T-K9Q4BKH-G4N1G5E-E466EYS'
-            //     }
-            //   }
-            // )
-            //
-            // if (fetchError.value) {
-            //   throw new Error(fetchError.value.message)
-            // }
-            //
-            // if (data.value) {
-            //   movies.value = data.value.docs
-            // }
-        } catch (e) {
-            error.value = e.message
-            movies.value = []
-        } finally {
-            loading.value = false
-        }
+      console.log(data)
+
+      movies.value = data.docs
+      total.value = data.total
+      pages.value = data.pages
+      currentPage.value = data.page
+      limit.value = data.limit
+
+    } catch (err: any) {
+      console.error('[MovieStore] searchMovies error:', err)
+      error.value = err?.data?.message || err?.message || 'Произошла ошибка при поиске'
+    } finally {
+      loading.value = false
     }
+  }
 
-    function clearMovieList () {
+  const reset = () => {
     movies.value = []
-    loading.value = false
-}
+    total.value = 0
+    currentPage.value = 1
+    limit.value = 10
+    error.value = null
+  }
 
-    return {
-        movies,
-        loading,
-        error,
-        fetchMovies,
-        clearMovieList
-    }
+  const hasMore = computed(() => {
+    return currentPage.value * limit.value < total.value
+  })
+
+  return {
+    movies,
+    total,
+    currentPage,
+    limit,
+    loading,
+    error,
+    searchMovies,
+    reset,
+    hasMore
+  }
 })

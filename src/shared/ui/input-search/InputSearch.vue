@@ -1,48 +1,59 @@
 <template>
   <AutoComplete
-    v-model="selectedValue"
-    :suggestions="suggestions"
+    v-model="modelValue"
+    :suggestions="movies"
     option-label="name"
     placeholder="Поиск..."
-    class="w-full md:w-56"
+    class="search"
     :loading="loading"
     empty-search-message="Фильм не найден..."
-    @complete="search"
-  >
-    <template #option="slotProps">
-      <div>{{ slotProps.option.name }}</div>
-    </template>
-  </AutoComplete>
+    :show-clear="true"
+    @clear="onClear"
+    @item-select="onItemSelect"
+  />
+  <small v-if="error" class="p-error">{{ error }}</small>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
 import { watchDebounced } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
-import AutoComplete, { type AutoCompleteCompleteEvent } from 'primevue/autocomplete'
-import type { ApiOptionType, MovieType } from '~/shared/ui/input-search/types.ts'
-import { useMovieSearch } from './store'
+import type { Movie } from '~/shared/ui/input-search/MovieTypes'
+import { useMovieStore } from './store'
 
-const movieSearch = useMovieSearch()
-const { loading } = storeToRefs(movieSearch)
+const movieStore = useMovieStore()
+const { loading, movies, error } = storeToRefs(movieStore)
 
-// Типизировать any
-const selectedValue = ref<any | null>(null)
-const suggestions = ref<MovieType[]>([])
+const modelValue = ref<string | Movie | null>(null)
 
-// Переписать на watchDebounced
-watchDebounced(selectedValue, (newVal) => {
-  console.log(newVal)
-}, { debounce: 1000 }
-)
+watchDebounced(modelValue, async (newValue) => {
+  if (!newValue) {
+    movieStore.reset()
+    return
+  }
 
-// const search = async (event: AutoCompleteCompleteEvent) => {
-//   const query = event.query.trim()
-//
-//   if (query.length >= 3) {
-//     selectedValue.value = query.trim()
-//     await movieSearchStore.fetchMovies(query)
-//     suggestions.value = movieSearchStore.movies
-//   }
-// }
+  const query = (typeof newValue === 'string' ? newValue : newValue.name).trim()
+
+  if (query.length < 3) {
+    movieStore.reset() // Очищаем, если запрос слишком короткий
+    return
+  }
+  await movieStore.searchMovies(query, 1)
+
+}, { debounce: 500, maxWait: 1000 })
+
+const onItemSelect = (event: { originalEvent: Event, value: Movie }) => {
+  console.log('Выбран фильм:', event.value)
+  // Здесь можно, например, перейти на страницу фильма:
+  // await navigateTo(`/movies/${event.value.id}`)
+}
+
+const onClear = () => {
+  modelValue.value = null
+  movieStore.reset()
+}
 </script>
+
+<style scoped lang="sass">
+.search
+  width: 20rem
+</style>

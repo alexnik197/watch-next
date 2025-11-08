@@ -4,6 +4,10 @@ export default defineNuxtConfig({
   srcDir: './src',
   compatibilityDate: '2025-10-04',
   devtools: { enabled: true },
+  runtimeConfig: {
+    kinopoiskApiKey: process.env.KINOPOISK_API_KEY,
+    kinopoiskApiUrl: process.env.KINOPOISK_API_URL
+  },
 
   css: ['~/assets/css/main.css'],
   

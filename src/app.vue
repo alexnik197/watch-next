@@ -1,22 +1,15 @@
 <template>
   <div class="px-4">
-    <Menubar :model="menuItems" />
-    <div class="my-4">
-      <Card>
-        <template #title>
-          Welcome to PrimeVue 4 + Nuxt App
-        </template>
-        <template #content>
-          <InputSearch />
-        </template>
-      </Card>
+  <Menubar :model="menuItems" />
+    <div class="search">
+      <h2>Выберите свой любимый фильм</h2>
+      <InputSearch />
     </div>
   </div>
 </template>
 
 <script setup>
 import Menubar from 'primevue/menubar'
-import Card from 'primevue/card'
 import InputSearch from '~/shared/ui/input-search/InputSearch.vue'
 
 const menuItems = [
@@ -32,6 +25,12 @@ const menuItems = [
 </script>
 
 <style lang="sass">
-.p-m-4
-  margin: 2rem
+.search
+  display: flex
+  flex-direction: column
+  align-items: center
+  gap: 1rem
+  border: 1px solid #fcfcfc
+  border-radius: 5px
+  padding: 1rem 2rem
 </style>
