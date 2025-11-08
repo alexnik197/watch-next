@@ -1,4 +1,4 @@
-import { kinopoiskApi } from '~/server/services/kinopoisk.ts'
+import { kinopoiskApi } from '~/server/utils/kinopoisk'
 
 export default defineEventHandler(async (event) => {
   const { query, page = 1, limit = 10 } = getQuery(event)
