@@ -1,38 +1,53 @@
 <template>
-  <div class="px-4">
-  <Menubar :model="menuItems" />
-    <div class="search">
-      <h2>Выберите свой любимый фильм</h2>
-      <InputSearch />
-    </div>
-    <AuthForm />
+  <div class="header">
+    <Menubar :model="menuItems">
+      <template #item="{ item, props, hasSubmenu }">
+        <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+          <a v-ripple :href="href" v-bind="props.action" @click="navigate">
+            <span :class="item.icon" />
+            <span>{{ item.label }}</span>
+          </a>
+        </router-link>
+        <a v-else v-ripple :href="item.url" :target="item.target" v-bind="props.action">
+          <span :class="item.icon" />
+          <span>{{ item.label }}</span>
+          <span v-if="hasSubmenu" class="pi pi-fw pi-angle-down" />
+        </a>
+      </template>
+    </Menubar>
   </div>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
 
-<script setup>
-import Menubar from 'primevue/menubar'
-import InputSearch from '~/shared/ui/input-search/InputSearch.vue'
-import AuthForm from '~/components/AuthForm.vue'
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const menuItems = [
   {
     label: 'Home',
-    icon: 'pi pi-home'
+    icon: 'pi pi-home',
+    command: () => {
+      router.push('/')
+    }
+  },
+  {
+    label: 'Auth',
+    icon: 'pi pi-info-circle',
+    command: () => {
+      router.push('/auth/login')
+    }
   },
   {
     label: 'About',
-    icon: 'pi pi-info-circle'
+    icon: 'pi pi-sun',
+    command: () => {
+      console.log('check')
+    }
   }
 ]
-</script>
 
-<style lang="sass">
-.search
-  display: flex
-  flex-direction: column
-  align-items: center
-  gap: 1rem
-  border: 1px solid #fcfcfc
-  border-radius: 5px
-  padding: 1rem 2rem
-</style>
+</script>
