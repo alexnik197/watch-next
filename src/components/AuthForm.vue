@@ -1,3 +1,49 @@
+<template>
+  <Form class="auth-form">
+    <h2>Авторизация</h2>
+    <div class="auth-inputs">
+      <FloatLabel variant="on">
+        <InputText
+          id="auth-email"
+          v-model="email"
+          type="text"
+          fluid
+        />
+        <label for="auth-email">Логин</label>
+      </FloatLabel>
+
+      <FloatLabel variant="on">
+        <InputText
+          id="auth-pass"
+          v-model="password"
+          type="text"
+          fluid
+          toggle-mask
+        />
+        <label for="auth-pass">Пароль</label>
+      </FloatLabel>
+
+      <Message v-if="errorMessage" severity="error">{{ errorMessage }}</Message>
+      <Message v-if="successMessage" severity="success">{{ successMessage }}</Message>
+    </div>
+    <div class="auth-actions">
+      <Button
+        label="Войти"
+        :loading="loading"
+        icon="pi pi-sign-in"
+        @click="handleSignIn"
+      />
+      <Button
+        label="Регистрация"
+        :loading="loading"
+        icon="pi pi-user-plus"
+        severity="secondary"
+        @click="handleSignUp"
+      />
+    </div>
+  </Form>
+</template>
+
 <script setup lang="ts">
 const client = useSupabaseClient()
 
@@ -56,44 +102,20 @@ const handleSignIn = async () => {
 
 </script>
 
-<template>
-  <div class="flex justify-center items-center h-screen">
-    <Card style="width: 25rem">
-      <template #title>
-        Авторизация
-      </template>
-      <template #content>
-        <div class="flex flex-col gap-4">
-          <div class="flex flex-col gap-2">
-            <label for="email">Email</label>
-            <InputText id="email" v-model="email" type="email" aria-describedby="email-help" />
-          </div>
-          <div class="flex flex-col gap-2">
-            <label for="password">Пароль</label>
-            <InputText id="password" v-model="password" type="password" />
-          </div>
+<style scoped lang="sass">
+.auth
+  &-form
+    display: flex
+    flex-direction: column
+    align-items: center
+    width: 25rem
+    gap: 1rem
+  &-inputs
+    width: 100%
+  &-actions
+    width: 100%
+    display: flex
+    flex-direction: row
+    justify-content: space-between
 
-          <Message v-if="errorMessage" severity="error">{{ errorMessage }}</Message>
-          <Message v-if="successMessage" severity="success">{{ successMessage }}</Message>
-        </div>
-      </template>
-      <template #footer>
-        <div class="flex gap-2">
-          <Button
-            label="Войти"
-            :loading="loading"
-            icon="pi pi-sign-in"
-            @click="handleSignIn"
-          />
-          <Button
-            label="Регистрация"
-            :loading="loading"
-            icon="pi pi-user-plus"
-            severity="secondary"
-            @click="handleSignUp"
-          />
-        </div>
-      </template>
-    </Card>
-  </div>
-</template>
+</style>

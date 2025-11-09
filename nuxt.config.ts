@@ -19,11 +19,19 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@primevue/nuxt-module',
     '@nuxtjs/tailwindcss',
-    '@nuxtjs/supabase'
+    '@nuxtjs/supabase',
+    '@nuxtjs/color-mode'
   ],
 
   supabase: {
     redirect: false
+  },
+
+  colorMode: {
+    preference: 'system',
+    fallback: 'light',
+    classSuffix: '',
+    storageKey: 'nuxt-color-mode'
   },
 
   primevue: {

@@ -1,24 +1,10 @@
 <template>
-  <div class="header">
-    <Menubar :model="menuItems">
-      <template #item="{ item, props, hasSubmenu }">
-        <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
-          <a v-ripple :href="href" v-bind="props.action" @click="navigate">
-            <span :class="item.icon" />
-            <span>{{ item.label }}</span>
-          </a>
-        </router-link>
-        <a v-else v-ripple :href="item.url" :target="item.target" v-bind="props.action">
-          <span :class="item.icon" />
-          <span>{{ item.label }}</span>
-          <span v-if="hasSubmenu" class="pi pi-fw pi-angle-down" />
-        </a>
-      </template>
-    </Menubar>
+  <div class="app">
+    <Menubar :model="menuItems" class="app-header" />
+    <NuxtLayout class="app-layouts">
+      <NuxtPage />
+    </NuxtLayout>
   </div>
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
 </template>
 
 <script setup lang="ts">
@@ -38,11 +24,11 @@ const menuItems = [
     label: 'Auth',
     icon: 'pi pi-info-circle',
     command: () => {
-      router.push('/auth/login')
+      router.push('/auth')
     }
   },
   {
-    label: 'About',
+    label: 'Change theme',
     icon: 'pi pi-sun',
     command: () => {
       console.log('check')
@@ -51,3 +37,23 @@ const menuItems = [
 ]
 
 </script>
+
+<style lang="sass">
+.app
+  display: flex
+  flex-direction: column
+  align-items: center
+  width: 100%
+  height: 100vh
+  &-header
+    display: flex
+    flex-direction: row
+    align-items: center
+    width: 80%
+  &-layouts
+    display: flex
+    align-items: center
+    flex-direction: column
+    height: 100%
+    width: 80%
+</style>
