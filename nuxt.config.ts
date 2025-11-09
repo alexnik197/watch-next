@@ -18,8 +18,13 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@pinia/nuxt',
     '@primevue/nuxt-module',
-    '@nuxtjs/tailwindcss'
+    '@nuxtjs/tailwindcss',
+    '@nuxtjs/supabase'
   ],
+
+  supabase: {
+    redirect: false
+  },
 
   primevue: {
     options: {

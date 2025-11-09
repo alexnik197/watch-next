@@ -5,12 +5,14 @@
       <h2>Выберите свой любимый фильм</h2>
       <InputSearch />
     </div>
+    <AuthForm />
   </div>
 </template>
 
 <script setup>
 import Menubar from 'primevue/menubar'
 import InputSearch from '~/shared/ui/input-search/InputSearch.vue'
+import AuthForm from '~/components/AuthForm.vue'
 
 const menuItems = [
   {
