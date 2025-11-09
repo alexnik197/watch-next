@@ -7,7 +7,6 @@
     class="w-full md:w-56"
     :loading="loading"
     empty-search-message="Фильм не найден..."
-    @complete="search"
   >
     <template #option="slotProps">
       <div>{{ slotProps.option.name }}</div>
@@ -16,9 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
 import { watchDebounced } from '@vueuse/core'
-import { storeToRefs } from 'pinia'
 import AutoComplete, { type AutoCompleteCompleteEvent } from 'primevue/autocomplete'
 import type { ApiOptionType, MovieType } from '~/shared/ui/input-search/types.ts'
 import { useMovieSearch } from './store'
