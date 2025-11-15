@@ -23,8 +23,18 @@
         <label for="auth-pass">Пароль</label>
       </FloatLabel>
 
-      <Message v-if="errorMessage" severity="error">{{ errorMessage }}</Message>
-      <Message v-if="successMessage" severity="success">{{ successMessage }}</Message>
+      <Message
+        v-if="errorMessage"
+        severity="error"
+      >
+        {{ errorMessage }}
+      </Message>
+      <Message
+        v-if="successMessage"
+        severity="success"
+      >
+        {{ successMessage }}
+      </Message>
     </div>
     <div class="auth-actions">
       <Button
@@ -62,15 +72,18 @@ const handleSignUp = async () => {
 
   const { data, error } = await client.auth.signUp({
     email: email.value,
-    password: password.value,
+    password: password.value
   })
 
   if (error) {
     errorMessage.value = error.message
   } else {
-    successMessage.value = 'Регистрация успешна! Проверьте вашу почту для подтверждения.'
-    // data.user содержит информацию о пользователе
-    console.log('User registered:', data.user)
+    successMessage.value =
+      'Регистрация успешна! Проверьте вашу почту для подтверждения.'
+    // Если пользователь сразу авторизован после регистрации, перенаправляем на главную
+    if (data.user) {
+      await navigateTo('/')
+    }
   }
 
   loading.value = false
@@ -82,24 +95,21 @@ const handleSignIn = async () => {
   errorMessage.value = ''
   successMessage.value = ''
 
-  const { data, error } = await client.auth.signInWithPassword({
+  const { error } = await client.auth.signInWithPassword({
     email: email.value,
-    password: password.value,
+    password: password.value
   })
 
   if (error) {
     errorMessage.value = error.message
+    loading.value = false
   } else {
     successMessage.value = 'Вход выполнен успешно!'
-    // После успешного входа Nuxt автоматически обновит состояние пользователя
-    // и мы можем перенаправить его, например, на дашборд
-    console.log('User signed in:', data.user)
-    // await navigateTo('/dashboard') // Пример редиректа
+    // Ждем обновления состояния пользователя перед редиректом
+    await nextTick()
+    await navigateTo('/')
   }
-
-  loading.value = false
 }
-
 </script>
 
 <style scoped lang="sass">
@@ -117,5 +127,4 @@ const handleSignIn = async () => {
     display: flex
     flex-direction: row
     justify-content: space-between
-
 </style>

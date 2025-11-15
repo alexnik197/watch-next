@@ -9,7 +9,7 @@ export default defineNuxtConfig({
     kinopoiskApiUrl: process.env.KINOPOISK_API_URL
   },
 
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/main.sass'],
   
   modules: [
     '@nuxt/eslint',

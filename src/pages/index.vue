@@ -14,7 +14,12 @@
 </template>
 
 <script setup>
-import InputSearch from "~/shared/ui/input-search/InputSearch.vue";
+import InputSearch from "~/shared/ui/input-search/InputSearch.vue"
+
+definePageMeta({
+  middleware: 'auth'
+})
+
 </script>
 
 <style lang="sass">

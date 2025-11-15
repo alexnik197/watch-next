@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400700&display=swap')
+
+@keyframes animated-gradient
+  0%
+    background-position: 0 50%
+  50%
+    background-position: 100% 50%
+  100%
+    background-position: 0 50%
+
+body
+  margin: 0
+  font-family: 'Roboto', sans-serif
+  color: var(--p-text-color)
+  min-height: 100vh
+  width: 100%
+  transition: background 0.5s ease-in-out
+  background-size: 200% 200%
+  background-image: linear-gradient(-45deg, #f8d5d5, #f0c2e2, #d1c1ed, #bce0f0)
+  animation: animated-gradient 20s ease infinite
+
+.dark body
+  background-image: linear-gradient(-45deg, #0b0115, #1d0333, #3c096c, #240046)
